@@ -22,7 +22,13 @@ class Kernel extends ConsoleKernel
 
     protected function commands(): void
     {
+        // Carga automáticamente todos los comandos en app/Console/Commands
         $this->load(__DIR__ . '/Commands');
+
         require base_path('routes/console.php');
+
+        // No hace falta listar comandos aquí, solo si quieres registrar uno dinámicamente
+        // Ejemplo (opcional):
+        // $this->command(Commands\ImportMuebles::class);
     }
 }
