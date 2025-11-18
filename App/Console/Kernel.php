@@ -23,7 +23,8 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         // Carga automáticamente todos los comandos en app/Console/Commands
-        $this->load(__DIR__ . '/Commands');
+        // Cargar solo ImportMuebles
+        $this->command(\App\Console\Commands\ImportMuebles::class);
 
         require base_path('routes/console.php');
 

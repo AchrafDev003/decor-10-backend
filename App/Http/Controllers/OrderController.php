@@ -363,8 +363,15 @@ class OrderController extends Controller
             ->first();
 
         if ($newsletterCoupon) {
+            if ($cartTotal < 99) {
+                return [
+                    'valid' => false,
+                    'message' => 'El total del carrito debe ser superior a 99€ para usar este cupón de newsletter.',
+                ];
+            }
             // No se marca como redeemed todavía, se hará al confirmar la orden
             $discount = $newsletterCoupon->discount ?? 10; // default 10%
+
             return [
                 'valid' => true,
                 'discount' => $discount,
