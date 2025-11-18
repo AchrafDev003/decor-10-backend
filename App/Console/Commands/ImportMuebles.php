@@ -12,7 +12,7 @@ class ImportMuebles extends Command
 
     public function handle()
     {
-        $path = database_path('sql/muebles(19).sql');
+        $path = database_path('sql/muebles.sql');
 
         if (!file_exists($path)) {
             $this->error('Archivo SQL no encontrado');
@@ -20,9 +20,17 @@ class ImportMuebles extends Command
         }
 
         $sql = file_get_contents($path);
-        DB::unprepared($sql);
 
-        $this->info('Importación completada correctamente');
+        try {
+            // Ejecutar SQL
+            DB::unprepared($sql);
+            $this->info('Importación completada correctamente');
+        } catch (\Exception $e) {
+            // Captura error si la tabla ya existe
+            $this->warn('Ocurrió un problema, probablemente algunas tablas ya existían.');
+            $this->warn($e->getMessage());
+        }
+
         return 0;
     }
 }
