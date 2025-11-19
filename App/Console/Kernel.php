@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ExpirePromosJob)->dailyAt('00:00');
     }
 
-    protected function commands(): void
+    /* protected function commands(): void
     {
         // Carga automáticamente todos los comandos en app/Console/Commands
         // Cargar solo ImportMuebles
@@ -31,5 +31,5 @@ class Kernel extends ConsoleKernel
         // No hace falta listar comandos aquí, solo si quieres registrar uno dinámicamente
         // Ejemplo (opcional):
         // $this->command(Commands\ImportMuebles::class);
-    }
+    }*/
 }

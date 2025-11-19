@@ -7,4 +7,4 @@ cmds = [
 ]
 
 [start]
-cmd = "php-fpm -F & nginx -c /workspace/nginx/default.conf -g 'daemon off;'" # rebuild force
+cmd = "php-fpm -F & nginx -c /workspace/nginx/default.conf -g 'daemon off;'"
