@@ -1,15 +1,31 @@
+# railpack.toml
 [phases.setup]
-nixPkgs = ["dunglas/frankenphp:php8.2.29-bookworm"]
+# Usamos FrankenPHP con PHP 8.2 y extensiones necesarias
+nixPkgs = [
+    "dunglas/frankenphp:php8.2.29-bookworm",
+    "php82Extensions.pdo_mysql",
+    "php82Extensions.mbstring",
+    "php82Extensions.curl",
+    "php82Extensions.dom",
+    "php82Extensions.fileinfo",
+    "php82Extensions.xml"
+]
 
 [phases.build]
 cmds = [
+    # Instalar dependencias PHP
     "composer install --no-dev --optimize-autoloader",
+    # Crear carpetas necesarias para Laravel
     "mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage",
+    # Cachear configuración, rutas, vistas y eventos
     "php artisan config:cache",
     "php artisan route:cache",
     "php artisan view:cache",
-    "php artisan event:cache"
+    "php artisan event:cache",
+    # Build JS si tienes frontend
+    "if [ -f package.json ]; then npm ci && npm run build; fi"
 ]
 
 [start]
-cmd = "frankenphp --host 0.0.0.0 --port ${PORT} public/index.php"
+# Comando de inicio: FrankenPHP sirve Laravel desde public/index.php
+cmd = "frankenphp public/index.php --host 0.0.0.0 --port ${PORT}"
