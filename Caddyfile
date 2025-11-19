@@ -1,0 +1,13 @@
+{
+    auto_https off
+}
+
+:80 {
+    root * public
+
+    php_fastcgi frankenphp {
+                               worker 4
+                           }
+
+    file_server
+}
