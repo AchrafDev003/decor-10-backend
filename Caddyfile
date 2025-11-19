@@ -1,8 +1,16 @@
 :8080
 
-encode gzip
+# Railway no permite HTTPS interno, así que lo desactivamos
+auto_https off
 
+# Carpeta pública de Laravel
 root * /app/public
+
+# Servir archivos estáticos (CSS, JS, imágenes)
 file_server
 
-php_fastcgi 127.0.0.1:9000
+# Enviar todas las solicitudes PHP a FrankenPHP
+php_fastcgi unix//tmp/php-fpm.sock
+
+# Manejar URLs amigables de Laravel
+try_files {path} {path}/ /index.php?{query}
