@@ -1,13 +1,8 @@
-{
-    auto_https off
-}
+:8080
 
-:80 {
-    root * public
+encode gzip
 
-    php_fastcgi frankenphp {
-                               worker 4
-                           }
+root * /app/public
+file_server
 
-    file_server
-}
+php_fastcgi 127.0.0.1:9000
