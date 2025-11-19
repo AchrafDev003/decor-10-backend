@@ -1,16 +1,10 @@
-# railpack.toml
-
 [phases.setup]
-# PHP y extensiones necesarias
-nixPkgs = ["php82", "php82Extensions.mysqlnd", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.curl"]
+nixPkgs = ["dunglas/frankenphp:php8.2.29-bookworm"]
 
 [phases.build]
 cmds = [
-    # Instalar dependencias de PHP sin dev y optimizar autoload
     "composer install --no-dev --optimize-autoloader",
-    # Crear carpetas necesarias de Laravel
     "mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage",
-    # Cache de Laravel para configuración, rutas, vistas y eventos
     "php artisan config:cache",
     "php artisan route:cache",
     "php artisan view:cache",
@@ -18,5 +12,4 @@ cmds = [
 ]
 
 [start]
-# Comando de inicio limpio: arrancamos Laravel directamente en el puerto que Railway asigna
-cmd = "php artisan serve --host=0.0.0.0 --port=${PORT}"
+cmd = "frankenphp --host 0.0.0.0 --port ${PORT} public/index.php"
