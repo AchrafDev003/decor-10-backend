@@ -3,6 +3,17 @@ FROM dunglas/frankenphp:php8.2.29-bookworm
 WORKDIR /app
 COPY . /app
 
+# Instalar herramientas necesarias
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar extensión zip para PHP
+RUN docker-php-ext-install zip
+
 # Instalar Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
@@ -11,7 +22,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Instalar Node.js y npm (si los necesitas)
+# Instalar Node.js y npm
 RUN apt-get update && apt-get install -y nodejs npm
 
 # Instalar dependencias JS
