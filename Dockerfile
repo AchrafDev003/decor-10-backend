@@ -35,8 +35,8 @@ RUN npm ci
 RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache \
     && chmod -R a+rw storage bootstrap/cache
 
-# Exponer puerto 8000 (el que usará FrankenPHP)
-EXPOSE 8000
+# Exponer puerto 8000 (el que usará 
+ENV PORT=8080
+CMD ["sh", "-c", "frankenphp serve --docroot=/app/public --port=$PORT"]
 
-# Comando para iniciar FrankenPHP sirviendo Laravel
-CMD ["frankenphp", "serve", "--docroot=/app/public", "--port=8000"]
+# Comando para ini
