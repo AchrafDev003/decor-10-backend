@@ -1,16 +1,13 @@
 :8080
 
-# Railway no permite HTTPS interno, así que lo desactivamos
+# Desactivar HTTPS interno (Railway no permite)
 auto_https off
 
 # Carpeta pública de Laravel
 root * /app/public
 
-# Servir archivos estáticos (CSS, JS, imágenes)
+# Servir archivos estáticos
 file_server
 
-# Enviar todas las solicitudes PHP a FrankenPHP
-php_fastcgi unix//tmp/php-fpm.sock
-
-# Manejar URLs amigables de Laravel
+# Redirigir todas las solicitudes a index.php
 try_files {path} {path}/ /index.php?{query}
