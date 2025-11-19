@@ -1,17 +1,23 @@
+# Dockerfile para Laravel + FrankenPHP en Railway
 FROM dunglas/frankenphp:php8.2.29-bookworm
 
+# Directorio de trabajo
 WORKDIR /app
+
+# Copiar los archivos del proyecto
 COPY . /app
 
-# Instalar herramientas necesarias
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     libzip-dev \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar extensión zip para PHP
+# Instalar extensión zip de PHP
 RUN docker-php-ext-install zip
 
 # Instalar Composer
@@ -19,18 +25,18 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');"
 
-# Instalar dependencias PHP
+# Instalar dependencias de PHP del proyecto
 RUN composer install --no-dev --optimize-autoloader
 
-# Instalar Node.js y npm
-RUN apt-get update && apt-get install -y nodejs npm
-
-# Instalar dependencias JS
+# Instalar dependencias de Node (si usas Laravel Mix o Vite)
 RUN npm ci
 
-# Crear carpetas necesarias y permisos
-RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache
-RUN chmod -R a+rw storage
+# Crear carpetas de storage y cache necesarias para Laravel
+RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache \
+    && chmod -R a+rw storage bootstrap/cache
 
-# Arrancar FrankenPHP
-CMD ["frankenphp", "run", "--config", "Caddyfile"]
+# Exponer puerto 8000 (el que usará FrankenPHP)
+EXPOSE 8000
+
+# Comando para iniciar FrankenPHP sirviendo Laravel
+CMD ["frankenphp", "serve", "--docroot=/app/public", "--port=8000"]
