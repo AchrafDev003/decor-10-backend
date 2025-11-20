@@ -56,6 +56,26 @@ Route::get('/test-perm', function () {
     }
 });
 
+/** Test MySQL Railway */
+Route::get('/db-test', function () {
+    try {
+        \DB::connection()->getPdo();
+        $version = \DB::select("SELECT VERSION() as v")[0]->v;
+
+        return response()->json([
+            "status" => "success",
+            "message" => "Conexión MySQL funcionando",
+            "mysql_version" => $version
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage()
+        ], 500);
+    }
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | API v1

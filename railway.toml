@@ -1,6 +1,0 @@
-[build]
-builder = "DOCKERFILE"
-
-[deploy]
-# No uses --port ni serve; frankenphp detecta PORT automáticamente
-startCommand = "php artisan migrate --force && frankenphp run public/index.php"
