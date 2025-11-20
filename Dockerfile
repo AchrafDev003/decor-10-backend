@@ -14,16 +14,19 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copiar proyecto
 COPY . /app
 
-# Dependencias PHP
+# Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
 # Storage y cache
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache \
     && chmod -R a+rw storage bootstrap/cache
 
-# Exponer puerto dinámico
+# Cachear config y rutas (opcional, mejora startup)
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
+
+# Exponer puerto dinámico de Railway
 ENV PORT=${PORT:-8080}
 EXPOSE $PORT
 
-# ✅ Arranque correcto en Railway
+# Arrancar FrankenPHP
 CMD ["frankenphp", "run", "public/index.php"]
