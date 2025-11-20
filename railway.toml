@@ -2,5 +2,4 @@
 builder = "DOCKERFILE"
 
 [deploy]
-# Comando correcto para arrancar FrankenPHP
-startCommand = "frankenphp run --config /app"
+startCommand = "frankenphp run --config /app/frankenphp.json"

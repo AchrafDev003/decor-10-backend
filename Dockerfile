@@ -39,4 +39,5 @@ EXPOSE 8080
 
 # Comando correcto para iniciar FrankenPHP
 # YA NO usar vendor/bin/frankenphp porque NO existe
-CMD ["frankenphp", "run", "--config", "/app"]
+CMD ["frankenphp", "run", "--config", "/app/frankenphp.json"]
+
