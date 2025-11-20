@@ -1,36 +1,28 @@
-FROM dunglas/frankenphp:php8.2.29-bookworm
+# Etapa 1: construir dependencias de Composer
+FROM php:8.3-cli as builder
+
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev libpng-dev \
+    && docker-php-ext-install zip pdo pdo_mysql gd
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-COPY . /app
+COPY . .
 
-# Instalar herramientas necesarias
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    libzip-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Instalar extensión zip para PHP
-RUN docker-php-ext-install zip
-
-# Instalar Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && php -r "unlink('composer-setup.php');"
-
-# Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Instalar Node.js y npm
-RUN apt-get update && apt-get install -y nodejs npm
+# Etapa 2: Runtime con FrankPHP
+FROM dunglas/frankenphp
 
-# Instalar dependencias JS
-RUN npm ci
+WORKDIR /app
 
-# Crear carpetas necesarias y permisos
-RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache
-RUN chmod -R a+rw storage
+COPY . .
+COPY --from=builder /app/vendor ./vendor
 
-# Arrancar FrankenPHP
-CMD ["frankenphp", "run", "--config", "Caddyfile"]
+ENV APP_ENV=production
+ENV FRANKENPHP_CONFIG="worker ./public/index.php"
+
+EXPOSE 8080
+
+CMD ["php", "vendor/bin/frankenphp", "run", "--config", "/app/frankenphp.json"]

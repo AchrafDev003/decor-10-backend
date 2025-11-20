@@ -1,5 +1,5 @@
 [build]
-builder = "NIXPACKS"
+builder = "dockerfile"
 
 [deploy]
-startCommand = "frankenphp run --config Caddyfile"
+restartPolicyType = "ON_FAILURE"
