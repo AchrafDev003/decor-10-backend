@@ -2,4 +2,5 @@
 builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "sh -c 'frankenphp run public/index.php --port=$PORT'"
+# No uses --port ni serve, solo run
+startCommand = "frankenphp run public/index.php"
