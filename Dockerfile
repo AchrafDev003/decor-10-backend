@@ -28,14 +28,15 @@ RUN composer install --no-dev --optimize-autoloader
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache \
     && chmod -R a+rw storage bootstrap/cache
 
-# Puerto interno de FrankPHP
+# Puerto interno de FrankenPHP
 ENV PORT=8080
 
-# Configuración de FrankPHP
+# Configuración de FrankenPHP
 ENV FRANKENPHP_CONFIG="worker /app/public/index.php"
 
 # Exponer puerto (Railway usará PORT)
 EXPOSE 8080
 
-# Comando para iniciar FrankPHP
-CMD ["php", "vendor/bin/frankenphp", "run", "--config", "/app/frankenphp.json"]
+# Comando correcto para iniciar FrankenPHP
+# YA NO usar vendor/bin/frankenphp porque NO existe
+CMD ["frankenphp", "run", "--config", "/app"]
