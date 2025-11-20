@@ -24,5 +24,5 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cac
 # Exponer puerto
 EXPOSE 8080
 
-# Comando correcto para lanzar Laravel
-CMD ["frankenphp", "worker", "public/index.php", "--port", "8080"]
+# Comando correcto: usar FrankenPHP directamente como servidor
+CMD ["frankenphp", "serve", "--docroot=/app/public", "--port=8080"]
