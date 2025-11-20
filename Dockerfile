@@ -21,9 +21,9 @@ RUN composer install --no-dev --optimize-autoloader
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache \
     && chmod -R a+rw storage bootstrap/cache
 
-# Exponer puerto
-EXPOSE 8080
+# Puerto dinámico
+ENV PORT=${PORT:-8080}
+EXPOSE $PORT
 
-# Comando correcto: usar FrankenPHP directamente como servidor
-CMD ["frankenphp", "run", "public/index.php"]
-
+# Comando correcto
+CMD ["sh", "-c", "frankenphp run public/index.php --port=$PORT"]
