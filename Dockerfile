@@ -25,5 +25,5 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cac
 ENV PORT=${PORT:-8080}
 EXPOSE $PORT
 
-# FrankPHP arranca en el docroot de Laravel escuchando en $PORT
-CMD ["frankenphp", "serve", "--docroot=/app/public", "--listen=0.0.0.0:$PORT"]
+# ✅ Arranque correcto en Railway
+CMD ["frankenphp", "run", "public/index.php"]
