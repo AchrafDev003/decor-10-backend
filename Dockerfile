@@ -25,4 +25,5 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cac
 EXPOSE 8080
 
 # Comando correcto: usar FrankenPHP directamente como servidor
-CMD ["frankenphp", "serve", "--docroot=/app/public", "--port=8080"]
+CMD ["frankenphp", "run", "public/index.php"]
+
