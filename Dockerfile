@@ -14,16 +14,16 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copiar proyecto
 COPY . /app
 
-# Instalar dependencias PHP
+# Dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
 # Storage y cache
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache \
     && chmod -R a+rw storage bootstrap/cache
 
-# FrankenPHP detecta el puerto por la variable PORT
+# Exponer puerto dinámico
 ENV PORT=${PORT:-8080}
 EXPOSE $PORT
 
-# FrankPHP arranca automáticamente
-CMD ["frankenphp", "run", "public/index.php"]
+# FrankPHP arranca en el docroot de Laravel escuchando en $PORT
+CMD ["frankenphp", "serve", "--docroot=/app/public", "--listen=0.0.0.0:$PORT"]
