@@ -1,5 +1,11 @@
+# --------------------------
+# Imagen base
+# --------------------------
 FROM dunglas/frankenphp:php8.3-bookworm
 
+# --------------------------
+# Directorio de trabajo
+# --------------------------
 WORKDIR /app
 
 # --------------------------
@@ -16,9 +22,16 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # --------------------------
-# Copiar proyecto
+# Copiar proyecto y .env
 # --------------------------
 COPY . /app
+# Asegúrate de que tu .env apunte a la base de datos pública
+# DB_HOST=mainline.proxy.rlwy.net
+# DB_PORT=45459
+# DB_DATABASE=railway
+# DB_USERNAME=root
+# DB_PASSWORD=HnWrIOcLxOoriiUOSCrQMQFfKFhdsXEb
+COPY .env /app/.env
 
 # --------------------------
 # Instalar dependencias PHP
@@ -32,20 +45,20 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cac
     && chmod -R a+rw storage bootstrap/cache
 
 # --------------------------
-# Cache de config y vistas
+# Cache de config, rutas y vistas
 # --------------------------
 RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
 # --------------------------
-# Variables de entorno
+# Puerto
 # --------------------------
 ENV PORT=${PORT:-8080}
 EXPOSE $PORT
 
 # --------------------------
-# Comando para producción:
-# Ejecuta migraciones y luego arranca FrankenPHP
+# Comando final: ejecutar migraciones y arrancar FrankenPHP
 # --------------------------
-CMD php artisan migrate --force && frankenphp run public/index.php
+CMD php artisan migrate --force \
+    && frankenphp run public/index.php
