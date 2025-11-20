@@ -2,4 +2,5 @@
 builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "frankenphp run public/index.php"
+# No uses --port ni serve; frankenphp detecta PORT automáticamente
+startCommand = "php artisan migrate --force && frankenphp run public/index.php"
