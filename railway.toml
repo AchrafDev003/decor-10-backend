@@ -1,5 +1,5 @@
 [build]
-builder = "dockerfile"
+builder = "DOCKERFILE"
 
 [deploy]
-restartPolicyType = "ON_FAILURE"
+startCommand = "php vendor/bin/frankenphp run --config /app/frankenphp.json"
