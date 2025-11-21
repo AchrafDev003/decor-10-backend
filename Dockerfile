@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y \
 # Instalar Caddy y crear enlace simbólico
 # -----------------------------
 RUN curl -1sLf 'https://get.caddyserver.com/' | bash \
-    && ln -s /usr/local/bin/caddy /usr/bin/caddy
+    && ln -sf /usr/local/bin/caddy /usr/bin/caddy \
+    && chmod +x /usr/local/bin/caddy /usr/bin/caddy
 
 # -----------------------------
 # Configurar directorio de trabajo
@@ -39,7 +40,7 @@ COPY . .
 # Instalar Composer
 # -----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction
 
 # -----------------------------
 # Copiar archivos de configuración
