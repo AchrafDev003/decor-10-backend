@@ -48,11 +48,17 @@ COPY docker/supervisor.conf /etc/supervisor/supervisord.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # -----------------------------
-# Exponer el puerto dinámico de Railway
+# Copiar entrypoint y dar permisos
+# -----------------------------
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# -----------------------------
+# Exponer el puerto de Railway
 # -----------------------------
 EXPOSE 8080
 
 # -----------------------------
-# Comando por defecto: supervisor
+# EntryPoint: migraciones + caches + supervisor
 # -----------------------------
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
