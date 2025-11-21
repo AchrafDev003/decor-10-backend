@@ -1,27 +1,29 @@
 FROM php:8.2-fpm
 
-# Extensiones necesarias
+# Instalación de dependencias
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl nginx supervisor libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+# Instalar Caddy (reemplaza a nginx)
+RUN apt-get install -y debian-keyring debian-archive-keyring && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy.gpg && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
+    apt-get update && apt-get install -y caddy
+
+WORKDIR /var/www/html
 
 # Copiar proyecto
-WORKDIR /var/www/html
 COPY . .
 
-# Instalar dependencias
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Instalar composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
 
-# Permisos de storage y cache
-RUN chmod -R 775 storage bootstrap/cache
-
-# Copiar configuración de Nginx y Supervisor
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+# Copiar Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
 
 # Exponer puerto
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord"]
-
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
