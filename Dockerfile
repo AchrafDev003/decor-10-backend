@@ -20,9 +20,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------
-# Instalar Caddy (reemplaza a Nginx)
+# Instalar Caddy y crear enlace simbólico
 # -----------------------------
-RUN curl -1sLf 'https://get.caddyserver.com/' | bash
+RUN curl -1sLf 'https://get.caddyserver.com/' | bash \
+    && ln -s /usr/local/bin/caddy /usr/bin/caddy
 
 # -----------------------------
 # Configurar directorio de trabajo
@@ -51,13 +52,6 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 # Exponer puerto de Railway
 # -----------------------------
 EXPOSE 8080
-
-# -----------------------------
-# Ejecutar migraciones y caches antes de arrancar Supervisor
-# -----------------------------
-RUN php artisan migrate --force \
-    && php artisan config:cache \
-    && php artisan route:cache
 
 # -----------------------------
 # Comando por defecto: supervisor
