@@ -25,9 +25,10 @@ RUN apt-get update && apt-get install -y \
 # -----------------------------
 # Instalar Caddy (binario oficial)
 # -----------------------------
-RUN curl -1sLf 'https://github.com/caddyserver/caddy/releases/latest/download/caddy_2.7.6_linux_amd64' \
-    -o /usr/bin/caddy \
+RUN curl -1sLf 'https://github.com/caddyserver/caddy/releases/download/v2.10.2/caddy_2.10.2_linux_amd64.tar.gz' \
+    | tar -C /usr/bin -xz caddy \
     && chmod +x /usr/bin/caddy
+
 
 
 # -----------------------------
