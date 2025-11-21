@@ -48,7 +48,7 @@ COPY docker/supervisor.conf /etc/supervisor/supervisord.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # -----------------------------
-# Exponer puerto
+# Exponer el puerto dinámico de Railway
 # -----------------------------
 EXPOSE 8080
 
