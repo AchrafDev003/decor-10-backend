@@ -4,11 +4,22 @@
 FROM php:8.2-fpm
 
 # -----------------------------
-# Instalación de dependencias de sistema
+# Instalación de dependencias de sistema y extensiones PHP
 # -----------------------------
 RUN apt-get update && apt-get install -y \
     git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev supervisor \
-    && docker-php-ext-install pdo pdo_mysql zip
+    libcurl4-openssl-dev libssl-dev zlib1g-dev libicu-dev g++ \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        zip \
+        curl \
+        mbstring \
+        bcmath \
+        intl \
+        fileinfo \
+        opcache \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------
 # Instalar Caddy (reemplaza a Nginx)
