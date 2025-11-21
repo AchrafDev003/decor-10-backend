@@ -3,6 +3,7 @@
         "builder": "Dockerfile"
     },
     "deploy": {
-        "startCommand": "php artisan migrate --force && php artisan config:cache && php artisan route:cache"
+        "startCommand": "./entrypoint.sh"
     }
+
 }

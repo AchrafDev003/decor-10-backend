@@ -1,12 +1,9 @@
 {$PORT} {
         root * /var/www/html/public
 
-        # PHP-FPM usando TCP
-        php_fastcgi 127.0.0.1:9000
+        # PHP-FPM vía socket
+        php_fastcgi unix//var/run/php/php-fpm.sock
 
-        # Servir archivos estáticos
         file_server
-
-        # Reescritura estilo Laravel para rutas "pretty URLs"
         try_files {path} /index.php?{query}
 }
