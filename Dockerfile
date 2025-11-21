@@ -50,15 +50,15 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 # -----------------------------
 # Copiar entrypoint y dar permisos
 # -----------------------------
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # -----------------------------
-# Exponer el puerto de Railway
+# Exponer puerto dinámico de Railway
 # -----------------------------
-EXPOSE 8080
+EXPOSE ${PORT:-8080}
 
 # -----------------------------
 # EntryPoint: migraciones + caches + supervisor
 # -----------------------------
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

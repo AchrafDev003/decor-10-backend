@@ -1,10 +1,10 @@
 #!/bin/sh
-set -e
+# entrypoint.sh
 
-# Ejecutar migraciones y caches de Laravel
+# Ejecuta migraciones y cache de Laravel (opcional)
 php artisan migrate --force
 php artisan config:cache
 php artisan route:cache
 
-# Iniciar Supervisor (PHP-FPM + Caddy)
+# Inicia supervisor
 exec supervisord -c /etc/supervisor/supervisord.conf
