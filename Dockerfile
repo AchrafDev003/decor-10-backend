@@ -4,16 +4,14 @@
 FROM php:8.2-fpm
 
 # -----------------------------
-# Instalación de dependencias de sistema y extensiones PHP
+# Instalación de dependencias del sistema y extensiones PHP necesarias
 # -----------------------------
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev supervisor \
+    git unzip curl libzip-dev libpng-dev libonig-dev supervisor \
     libcurl4-openssl-dev libssl-dev zlib1g-dev libicu-dev g++ \
     && docker-php-ext-install \
-        pdo \
         pdo_mysql \
         zip \
-        curl \
         mbstring \
         bcmath \
         intl \
