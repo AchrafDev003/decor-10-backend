@@ -1,13 +1,19 @@
+# -----------------------------
+# Imagen base
+# -----------------------------
 FROM php:8.2-fpm
 
-# Instalación de dependencias
+# -----------------------------
+# Instalación de dependencias de sistema
+# -----------------------------
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
+    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev gnupg dirmngr supervisor \
     && docker-php-ext-install pdo pdo_mysql zip
 
-# Instalar Caddy (reemplaza a nginx)
-# Instalar Caddy
-RUN apt-get update && apt-get install -y curl gnupg debian-keyring debian-archive-keyring \
+# -----------------------------
+# Instalar Caddy (reemplaza a Nginx)
+# -----------------------------
+RUN apt-get install -y debian-keyring debian-archive-keyring \
  && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
  && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
       | sed 's/^deb /deb [signed-by=\/usr\/share\/keyrings\/caddy-stable-archive-keyring.gpg] /' \
@@ -15,20 +21,34 @@ RUN apt-get update && apt-get install -y curl gnupg debian-keyring debian-archiv
  && apt-get update \
  && apt-get install -y caddy
 
-
+# -----------------------------
+# Configurar directorio de trabajo
+# -----------------------------
 WORKDIR /var/www/html
 
-# Copiar proyecto
+# -----------------------------
+# Copiar proyecto al contenedor
+# -----------------------------
 COPY . .
 
-# Instalar composer
+# -----------------------------
+# Instalar Composer
+# -----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Copiar Caddyfile
+# -----------------------------
+# Copiar archivos de configuración
+# -----------------------------
 COPY Caddyfile /etc/caddy/Caddyfile
+COPY docker/supervisor.conf /etc/supervisor/supervisord.conf
 
+# -----------------------------
 # Exponer puerto
+# -----------------------------
 EXPOSE 8080
 
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
+# -----------------------------
+# Comando por defecto: supervisor
+# -----------------------------
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
