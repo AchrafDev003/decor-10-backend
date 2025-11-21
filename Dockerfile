@@ -20,11 +20,11 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------
-# Instalar Caddy y crear enlace simbólico
+# Instalar Caddy (binario oficial)
 # -----------------------------
-RUN curl -1sLf 'https://get.caddyserver.com/' | bash \
-    && ln -sf /usr/local/bin/caddy /usr/bin/caddy \
-    && chmod +x /usr/local/bin/caddy /usr/bin/caddy
+RUN curl -1sLf 'https://github.com/caddyserver/caddy/releases/latest/download/caddy_2.7.6_linux_amd64.tar.gz' \
+    | tar -C /usr/bin -xz caddy \
+    && chmod +x /usr/bin/caddy
 
 # -----------------------------
 # Configurar directorio de trabajo
