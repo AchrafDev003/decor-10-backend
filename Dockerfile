@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
 # Instalar Caddy (reemplaza a Nginx)
 # -----------------------------
 RUN apt-get install -y debian-keyring debian-archive-keyring \
- && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
+ && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
+      | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
  && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
       | sed 's/^deb /deb [signed-by=\/usr\/share\/keyrings\/caddy-stable-archive-keyring.gpg] /' \
       > /etc/apt/sources.list.d/caddy-stable.list \
@@ -42,6 +43,7 @@ RUN composer install --no-dev --optimize-autoloader
 # -----------------------------
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY docker/supervisor.conf /etc/supervisor/supervisord.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # -----------------------------
 # Exponer puerto
