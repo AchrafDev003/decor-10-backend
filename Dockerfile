@@ -48,17 +48,18 @@ COPY docker/supervisor.conf /etc/supervisor/supervisord.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # -----------------------------
-# Copiar entrypoint y dar permisos
+# Exponer puerto de Railway
 # -----------------------------
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+EXPOSE 8080
 
 # -----------------------------
-# Exponer puerto dinámico de Railway
+# Ejecutar migraciones y caches antes de arrancar Supervisor
 # -----------------------------
-EXPOSE ${PORT:-8080}
+RUN php artisan migrate --force \
+    && php artisan config:cache \
+    && php artisan route:cache
 
 # -----------------------------
-# EntryPoint: migraciones + caches + supervisor
+# Comando por defecto: supervisor
 # -----------------------------
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
