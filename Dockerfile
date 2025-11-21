@@ -6,10 +6,15 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # Instalar Caddy (reemplaza a nginx)
-RUN apt-get install -y debian-keyring debian-archive-keyring && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy.gpg && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
-    apt-get update && apt-get install -y caddy
+# Instalar Caddy
+RUN apt-get update && apt-get install -y curl gnupg debian-keyring debian-archive-keyring \
+ && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
+ && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
+      | sed 's/^deb /deb [signed-by=\/usr\/share\/keyrings\/caddy-stable-archive-keyring.gpg] /' \
+      > /etc/apt/sources.list.d/caddy-stable.list \
+ && apt-get update \
+ && apt-get install -y caddy
+
 
 WORKDIR /var/www/html
 
