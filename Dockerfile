@@ -7,20 +7,13 @@ FROM php:8.2-fpm
 # Instalación de dependencias de sistema
 # -----------------------------
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev gnupg dirmngr supervisor \
+    git unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev supervisor \
     && docker-php-ext-install pdo pdo_mysql zip
 
 # -----------------------------
 # Instalar Caddy (reemplaza a Nginx)
 # -----------------------------
-RUN apt-get install -y debian-keyring debian-archive-keyring \
- && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-      | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
- && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-      | sed 's/^deb /deb [signed-by=\/usr\/share\/keyrings\/caddy-stable-archive-keyring.gpg] /' \
-      > /etc/apt/sources.list.d/caddy-stable.list \
- && apt-get update \
- && apt-get install -y caddy
+RUN curl -1sLf 'https://get.caddyserver.com/' | bash
 
 # -----------------------------
 # Configurar directorio de trabajo
